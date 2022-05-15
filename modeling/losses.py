@@ -24,15 +24,15 @@ class ColorLoss(nn.Module):
 
 class AnimeGanLoss:
     def __init__(self, args):
-        self.content_loss = nn.L1Loss().cuda()
-        self.gram_loss = nn.L1Loss().cuda()
-        self.color_loss = ColorLoss().cuda()
+        self.content_loss = nn.L1Loss().to(args.device)
+        self.gram_loss = nn.L1Loss().to(args.device)
+        self.color_loss = ColorLoss().to(args.device)
         self.wadvg = args.wadvg
         self.wadvd = args.wadvd
         self.wcon = args.wcon
         self.wgra = args.wgra
         self.wcol = args.wcol
-        self.vgg19 = Vgg19().cuda().eval()
+        self.vgg19 = Vgg19().to(args.device).eval()
         self.adv_type = args.gan_loss
         self.bce_loss = nn.BCELoss()
 
@@ -114,7 +114,7 @@ class AnimeGanLoss:
 
 
 class LossSummary:
-    def __init__(self):
+    def __init__(self, args):
         self.reset()
 
     def reset(self):

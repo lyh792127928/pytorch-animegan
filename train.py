@@ -33,6 +33,7 @@ def parse_args():
     parser.add_argument('--save-image-dir', type=str, default='/content/images')
     parser.add_argument('--gan-loss', type=str, default='lsgan', help='lsgan / hinge / bce')
     parser.add_argument('--resume', type=str, default='False')
+    parser.add_argument('--device', type=str, default='cpu')
     parser.add_argument('--use_sn', action='store_true')
     parser.add_argument('--save-interval', type=int, default=1)
     parser.add_argument('--debug-samples', type=int, default=0)
@@ -87,7 +88,7 @@ def save_samples(generator, loader, args, max_imgs=2, subname='gen'):
 
     for i, (img, *_) in enumerate(loader):
         with torch.no_grad():
-            fake_img = generator(img.cuda())
+            fake_img = generator(img.to(args.device))
             fake_img = fake_img.detach().cpu().numpy()
             # Channel first -> channel last
             fake_img  = fake_img.transpose(0, 2, 3, 1)
@@ -112,10 +113,10 @@ def main(args):
 
     print("Init models...")
 
-    G = Generator(args.dataset).cuda()
-    D = Discriminator(args).cuda()
+    G = Generator(args.dataset).to(args.device)
+    D = Discriminator(args).to(args.device)
 
-    loss_tracker = LossSummary()
+    loss_tracker = LossSummary(args)
 
     loss_fn = AnimeGanLoss(args)
 
@@ -123,7 +124,7 @@ def main(args):
     data_loader = DataLoader(
         AnimeDataSet(args),
         batch_size=args.batch_size,
-        num_workers=cpu_count(),
+        num_workers=8,
         pin_memory=True,
         shuffle=True,
         collate_fn=collate_fn,
@@ -160,7 +161,7 @@ def main(args):
             # Train with content loss only
             set_lr(optimizer_g, args.init_lr)
             for img, *_ in bar:
-                img = img.cuda()
+                img = img.to(args.device)
                 
                 optimizer_g.zero_grad()
 
@@ -181,10 +182,10 @@ def main(args):
         loss_tracker.reset()
         for img, anime, anime_gray, anime_smt_gray in bar:
             # To cuda
-            img = img.cuda()
-            anime = anime.cuda()
-            anime_gray = anime_gray.cuda()
-            anime_smt_gray = anime_smt_gray.cuda()
+            img = img.to(args.device)
+            anime = anime.to(args.device)
+            anime_gray = anime_gray.to(args.device)
+            anime_smt_gray = anime_smt_gray.to(args.device)
 
             # ---------------- TRAIN D ---------------- #
             optimizer_d.zero_grad()
