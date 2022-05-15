@@ -35,13 +35,13 @@ class AnimeDataSet(Dataset):
         self.debug_samples = args.debug_samples or 0
         self.data_dir = data_dir
         self.image_files =  {}
-        self.photo = 'train_photo'
+        self.photo = f'{data_dir}/train_photo'
         self.style = f'{anime_dir}/style'
         self.smooth =  f'{anime_dir}/smooth'
         self.dummy = torch.zeros(3, 256, 256)
 
         for opt in [self.photo, self.style, self.smooth]:
-            folder = os.path.join(data_dir, opt)
+            folder = os.path.join(opt)
             files = os.listdir(folder)
 
             self.image_files[opt] = [os.path.join(folder, fi) for fi in files]
