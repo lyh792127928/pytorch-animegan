@@ -9,6 +9,9 @@ vgg_std = torch.tensor([0.229, 0.224, 0.225]).float()
 if torch.cuda.is_available():
     vgg_std = vgg_std.cuda()
     vgg_mean = vgg_mean.cuda()
+else:
+    vgg_std = vgg_std.cpu()
+    vgg_mean = vgg_mean.cpu()
 
 class Vgg19(nn.Module):
     def __init__(self):
@@ -23,7 +26,7 @@ class Vgg19(nn.Module):
 
     @staticmethod
     def get_vgg19(last_layer='conv4_4'):
-        vgg = models.vgg19(pretrained=torch.cuda.is_available()).features
+        vgg = models.vgg19(pretrained=True).features
         model_list = []
 
         i = 0
@@ -55,24 +58,3 @@ class Vgg19(nn.Module):
         '''
         image = (image + 1.0) / 2.0
         return (image - self.mean) / self.std
-
-
-if __name__ == '__main__':
-    from PIL import Image
-    import numpy as np
-    from utils.image_processing import normalize_input
-
-    image = Image.open("example/10.jpg")
-    image = image.resize((224, 224))
-    np_img = np.array(image).astype('float32')
-    np_img = normalize_input(np_img)
-
-    img = torch.from_numpy(np_img)
-    img = img.permute(2, 0, 1)
-    img = img.unsqueeze(0)
-
-    vgg = Vgg19()
-
-    feat = vgg(img)
-
-    print(feat.shape)

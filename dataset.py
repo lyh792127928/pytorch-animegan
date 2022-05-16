@@ -11,7 +11,7 @@ class AnimeDataSet(Dataset):
         """   
         folder structure:
             - {data_dir}
-                - photo
+                - train_photo
                     1.jpg, ..., n.jpg
                 - {dataset}  # E.g Hayao
                     smooth
@@ -21,6 +21,7 @@ class AnimeDataSet(Dataset):
         """
         data_dir = args.data_dir
         dataset = args.dataset
+        train_photo_path = args.train_photo_path
 
         anime_dir = os.path.join(data_dir, dataset)
         if not os.path.exists(data_dir):
@@ -35,7 +36,7 @@ class AnimeDataSet(Dataset):
         self.debug_samples = args.debug_samples or 0
         self.data_dir = data_dir
         self.image_files =  {}
-        self.photo = f'{data_dir}/train_photo'
+        self.photo = f'{data_dir}/'+train_photo_path
         self.style = f'{anime_dir}/style'
         self.smooth =  f'{anime_dir}/smooth'
         self.dummy = torch.zeros(3, 256, 256)
@@ -110,13 +111,3 @@ class AnimeDataSet(Dataset):
             img += self.mean
     
         return normalize_input(img)
-
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    from torch.utils.data import DataLoader
-
-    anime_loader = DataLoader(AnimeDataSet('dataset/Hayao/smooth'), batch_size=2, shuffle=True)
-
-    img, img_gray = iter(anime_loader).next()
-    plt.imshow(img[1].numpy().transpose(1, 2, 0))
-    plt.show()

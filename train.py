@@ -24,16 +24,17 @@ gaussian_std = torch.tensor(0.1)
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='Hayao')
-    parser.add_argument('--data-dir', type=str, default='content/dataset')
+    parser.add_argument('--dataset', type=str, default='shinkai')
+    parser.add_argument('--data-dir', type=str, default='dataset')
+    parser.add_argument('--train-photo-path', type=str, default='train_photo')
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--init-epochs', type=int, default=5)
     parser.add_argument('--batch-size', type=int, default=6)
-    parser.add_argument('--checkpoint-dir', type=str, default='content/checkpoints')
-    parser.add_argument('--save-image-dir', type=str, default='content/images')
+    parser.add_argument('--checkpoint-dir', type=str, default='checkpoint')
+    parser.add_argument('--save-image-dir', type=str, default='dataset/predict_photo')
     parser.add_argument('--gan-loss', type=str, default='lsgan', help='lsgan / hinge / bce')
-    parser.add_argument('--resume', type=str, default='False')
     parser.add_argument('--device', type=str, default='cpu')
+    #stor_true为如果命令行有该参数，则该参数设置为True,否则设置为False
     parser.add_argument('--use_sn', action='store_true')
     parser.add_argument('--save-interval', type=int, default=1)
     parser.add_argument('--debug-samples', type=int, default=0)
@@ -54,6 +55,7 @@ def parse_args():
 def collate_fn(batch):
     img, anime, anime_gray, anime_smt_gray = zip(*batch)
     return (
+        #torch.stack为沿着dim方向进行连接
         torch.stack(img, 0),
         torch.stack(anime, 0),
         torch.stack(anime_gray, 0),
@@ -78,9 +80,7 @@ def check_params(args):
 
 
 def save_samples(generator, loader, args, max_imgs=2, subname='gen'):
-    '''
-    Generate and save images
-    '''
+    #Generate and save images
     generator.eval()
 
     max_iter = (max_imgs // args.batch_size) + 1
@@ -89,7 +89,7 @@ def save_samples(generator, loader, args, max_imgs=2, subname='gen'):
     for i, (img, *_) in enumerate(loader):
         with torch.no_grad():
             fake_img = generator(img.to(args.device))
-            fake_img = fake_img.detach().cpu().numpy()
+            fake_img = fake_img.detach().to(args.device).numpy()
             # Channel first -> channel last
             fake_img  = fake_img.transpose(0, 2, 3, 1)
             fake_imgs.append(denormalize_input(fake_img, dtype=np.int16))
@@ -134,25 +134,20 @@ def main(args):
     optimizer_d = optim.Adam(D.parameters(), lr=args.lr_d, betas=(0.5, 0.999))
 
     start_e = 0
-    if args.resume == 'GD':
-        # Load G and D
-        try:
-            start_e = load_checkpoint(G, args.checkpoint_dir)
-            print("G weight loaded")
-            load_checkpoint(D, args.checkpoint_dir)
-            print("D weight loaded")
-        except Exception as e:
-            print('Could not load checkpoint, train from scratch', e)
-    elif args.resume == 'G':
-        # Load G only
-        try:
-            start_e = load_checkpoint(G, args.checkpoint_dir, posfix='_init')
-        except Exception as e:
-            print('Could not load G init checkpoint, train from scratch', e)
+
+    # Load G and D
+    try:
+        start_e = load_checkpoint(G, args.checkpoint_dir)
+        print("G weight loaded")
+        load_checkpoint(D, args.checkpoint_dir)
+        print("D weight loaded")
+    except Exception as e:
+        print('Could not load checkpoint, train from scratch', e)
 
     for e in range(start_e, args.epochs):
         print(f"Epoch {e}/{args.epochs}")
         bar = tqdm(data_loader)
+
         G.train()
 
         init_losses = []
@@ -170,7 +165,7 @@ def main(args):
                 loss.backward()
                 optimizer_g.step()
 
-                init_losses.append(loss.cpu().detach().numpy())
+                init_losses.append(loss.to(args.device).detach().numpy())
                 avg_content_loss = sum(init_losses) / len(init_losses)
                 bar.set_description(f'[Init Training G] content loss: {avg_content_loss:2f}')
 
@@ -232,6 +227,7 @@ def main(args):
             bar.set_description(f'loss G: adv {avg_adv:2f} con {avg_content:2f} gram {avg_gram:2f} color {avg_color:2f} / loss D: {avg_adv_d:2f}')
 
         if e % args.save_interval == 0:
+            print('test')
             save_checkpoint(G, optimizer_g, e, args)
             save_checkpoint(D, optimizer_d, e, args)
             save_samples(G, data_loader, args)
