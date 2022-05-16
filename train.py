@@ -89,7 +89,7 @@ def save_samples(generator, loader, args, max_imgs=2, subname='gen'):
     for i, (img, *_) in enumerate(loader):
         with torch.no_grad():
             fake_img = generator(img.to(args.device))
-            fake_img = fake_img.detach().to(args.device).numpy()
+            fake_img = fake_img.detach().cpu().numpy()
             # Channel first -> channel last
             fake_img  = fake_img.transpose(0, 2, 3, 1)
             fake_imgs.append(denormalize_input(fake_img, dtype=np.int16))
@@ -165,7 +165,7 @@ def main(args):
                 loss.backward()
                 optimizer_g.step()
 
-                init_losses.append(loss.to(args.device).detach().numpy())
+                init_losses.append(loss.cpu().detach().numpy())
                 avg_content_loss = sum(init_losses) / len(init_losses)
                 bar.set_description(f'[Init Training G] content loss: {avg_content_loss:2f}')
 
