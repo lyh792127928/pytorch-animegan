@@ -4,7 +4,7 @@ from inference import Transformer
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--checkpoint', type=str, default='/content/checkpoints')
+    parser.add_argument('--checkpoint', type=str, default='checkpoint')
     parser.add_argument('--src', type=str, default='/content/checkpoints', help='Path to input video')
     parser.add_argument('--dest', type=str, default='/content/images', help='Path to save new video')
     parser.add_argument('--batch-size', type=int, default=4)

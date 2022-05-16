@@ -10,8 +10,8 @@ from tqdm import tqdm
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video-path', type=str, default='/home/ubuntu/Downloads/kimetsu_yaiba.mp4')
-    parser.add_argument('--save-path', type=str, default='./script/test_crop')
+    parser.add_argument('--video-path', type=str, default='./dataset.video/test.mp4')
+    parser.add_argument('--save-path', type=str, default='./dataset/test_crop')
     parser.add_argument('--max-image', type=int, default=1800)
     parser.add_argument('--start', type=int, default=0)
     parser.add_argument('--end', type=int, default=0)
@@ -57,6 +57,7 @@ class VideoConverter:
                 # print(f'x: [{start_x}:{end_x}], y: [{start_y}:{end_y}]')
                 sub_im = image[start_x: end_x, start_y: end_y, :]
 
+                #当标准差足够大时，即不为纯色时，将图片分割进行保存
                 if np.std(sub_im) > 25.0:
                     save_path = os.path.join(self.save_dir, f'{self.counter}.jpg')
                     cv2.imwrite(save_path, sub_im)

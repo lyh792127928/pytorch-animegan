@@ -6,8 +6,8 @@ import numpy as np
 import torch.optim as optim
 from multiprocessing import cpu_count
 from torch.utils.data import DataLoader
-from modeling.anime_gan import Generator
-from modeling.anime_gan import Discriminator
+from modeling.anime_ganv2 import Generator
+from modeling.anime_ganv2 import Discriminator
 from modeling.losses import AnimeGanLoss
 from modeling.losses import LossSummary
 from utils.common import load_checkpoint
@@ -36,7 +36,7 @@ def parse_args():
     parser.add_argument('--device', type=str, default='cpu')
     #stor_true为如果命令行有该参数，则该参数设置为True,否则设置为False
     parser.add_argument('--use_sn', action='store_true')
-    parser.add_argument('--save-interval', type=int, default=1)
+    parser.add_argument('--save-interval', type=int, default=5)
     parser.add_argument('--debug-samples', type=int, default=0)
     parser.add_argument('--lr-g', type=float, default=2e-4)
     parser.add_argument('--lr-d', type=float, default=4e-4)
@@ -170,13 +170,13 @@ def main(args):
                 bar.set_description(f'[Init Training G] content loss: {avg_content_loss:2f}')
 
             set_lr(optimizer_g, args.lr_g)
-            save_checkpoint(G, optimizer_g, e, args, posfix='_init')
-            save_samples(G, data_loader, args, subname='initg')
+            #save_checkpoint(G, optimizer_g, e, args, posfix='_init')
+            #save_samples(G, data_loader, args, subname='initg')
             continue
 
         loss_tracker.reset()
         for img, anime, anime_gray, anime_smt_gray in bar:
-            # To cuda
+            # To cuda or cpu
             img = img.to(args.device)
             anime = anime.to(args.device)
             anime_gray = anime_gray.to(args.device)
@@ -227,9 +227,9 @@ def main(args):
             bar.set_description(f'loss G: adv {avg_adv:2f} con {avg_content:2f} gram {avg_gram:2f} color {avg_color:2f} / loss D: {avg_adv_d:2f}')
 
         if e % args.save_interval == 0:
-            print('test')
             save_checkpoint(G, optimizer_g, e, args)
             save_checkpoint(D, optimizer_d, e, args)
+        if e % 20 == 0:
             save_samples(G, data_loader, args)
 
 
