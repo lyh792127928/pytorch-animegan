@@ -146,6 +146,7 @@ def conv_sn(in_channels, out_channels, kernel_size, stride=1, padding=0, bias=Tr
 class Discriminator(nn.Module):
     def __init__(self,args, in_channels=3, channels=64, n_dis=2):
         super().__init__()
+        self.name = f'discriminator_{args.dataset}'
         channels = channels // 2
         self.first = nn.Sequential(
             conv_sn(in_channels, channels, kernel_size=3, stride=1, padding=1, bias=False),
