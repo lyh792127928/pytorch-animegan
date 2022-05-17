@@ -45,6 +45,7 @@ class VideoConverter:
         height, width, _ = image.shape
 
         # Image can be divided into rows * cols sub-images
+        #将视频帧截取，划分为row*cols个
         rows = height // self.image_size
         cols = width // self.image_size
 

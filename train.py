@@ -26,28 +26,28 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default='shinkai')
     parser.add_argument('--data-dir', type=str, default='dataset')
-    parser.add_argument('--train-photo-path', type=str, default='train_photo')
+    parser.add_argument('--train_photo_path', type=str, default='train_photo')
     parser.add_argument('--epochs', type=int, default=100)
-    parser.add_argument('--init-epochs', type=int, default=5)
+    parser.add_argument('--init_epochs', type=int, default=5)
     parser.add_argument('--batch-size', type=int, default=6)
-    parser.add_argument('--checkpoint-dir', type=str, default='checkpoint')
-    parser.add_argument('--save-image-dir', type=str, default='dataset/predict_photo')
-    parser.add_argument('--gan-loss', type=str, default='lsgan', help='lsgan / hinge / bce')
+    parser.add_argument('--checkpoint_dir', type=str, default='checkpoint')
+    parser.add_argument('--save_image_dir', type=str, default='dataset/predict_photo')
+    parser.add_argument('--gan_loss', type=str, default='lsgan', help='lsgan / hinge / bce')
     parser.add_argument('--device', type=str, default='cpu')
     #stor_true为如果命令行有该参数，则该参数设置为True,否则设置为False
     parser.add_argument('--use_sn', action='store_true')
-    parser.add_argument('--save-interval', type=int, default=5)
-    parser.add_argument('--debug-samples', type=int, default=0)
-    parser.add_argument('--lr-g', type=float, default=2e-4)
-    parser.add_argument('--lr-d', type=float, default=4e-4)
-    parser.add_argument('--init-lr', type=float, default=1e-3)
+    parser.add_argument('--save_interval', type=int, default=5)
+    parser.add_argument('--debug_samples', type=int, default=0)
+    parser.add_argument('--lr_g', type=float, default=2e-4)
+    parser.add_argument('--lr_d', type=float, default=4e-4)
+    parser.add_argument('--init_lr', type=float, default=1e-3)
     parser.add_argument('--wadvg', type=float, default=10.0, help='Adversarial loss weight for G')
     parser.add_argument('--wadvd', type=float, default=10.0, help='Adversarial loss weight for D')
     parser.add_argument('--wcon', type=float, default=1.5, help='Content loss weight')
     parser.add_argument('--wgra', type=float, default=3.0, help='Gram loss weight')
     parser.add_argument('--wcol', type=float, default=30.0, help='Color loss weight')
-    parser.add_argument('--d-layers', type=int, default=3, help='Discriminator conv layers')
-    parser.add_argument('--d-noise', action='store_true')
+    parser.add_argument('--d_layers', type=int, default=3, help='Discriminator conv layers')
+    parser.add_argument('--d_noise', action='store_true')
 
     return parser.parse_args()
 
@@ -65,9 +65,11 @@ def collate_fn(batch):
 
 def check_params(args):
     data_path = os.path.join(args.data_dir, args.dataset)
+    #检查文件夹是否存在，如果dataset文件夹不存在，则报错
     if not os.path.exists(data_path):
         raise FileNotFoundError(f'Dataset not found {data_path}')
 
+    #检查文件夹是否存在，如果save文件夹不存在，则创建
     if not os.path.exists(args.save_image_dir):
         print(f'* {args.save_image_dir} does not exist, creating...')
         os.makedirs(args.save_image_dir)
