@@ -46,7 +46,7 @@ def load_checkpoint(model, checkpoint_dir, posfix=''):
 
 
 def load_weight(model, weight):
-    checkpoint = torch.load('checkpoint/generator_Shinkai.pth', map_location=torch.device('cpu'))
+    checkpoint = torch.load('checkpoint/generator_shinkai.pth', map_location=torch.device('cpu'))
     model.load_state_dict(checkpoint['model_state_dict'], strict=True)
     epoch = checkpoint['epoch']
     del checkpoint
