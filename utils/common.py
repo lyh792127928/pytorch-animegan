@@ -1,3 +1,4 @@
+from re import A
 import torch
 import gc
 import os
@@ -46,7 +47,8 @@ def load_checkpoint(model, checkpoint_dir, posfix=''):
 
 
 def load_weight(model, weight):
-    checkpoint = torch.load('checkpoint/generator_shinkai.pth', map_location=torch.device('cpu'))
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    checkpoint = torch.load(weight, map_location=torch.device(device))
     model.load_state_dict(checkpoint['model_state_dict'], strict=True)
     epoch = checkpoint['epoch']
     del checkpoint

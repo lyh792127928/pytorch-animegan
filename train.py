@@ -91,8 +91,10 @@ def save_samples(generator, loader, args, max_imgs=2, subname='gen'):
     for i, (img, *_) in enumerate(loader):
         with torch.no_grad():
             fake_img = generator(img.to(args.device))
+            #detach为取消计算梯度,numpy()为转化为numpy，便于后续输入图片
             fake_img = fake_img.detach().cpu().numpy()
             # Channel first -> channel last
+            #将图片转化为channel last，才能使用cv2进行保存
             fake_img  = fake_img.transpose(0, 2, 3, 1)
             fake_imgs.append(denormalize_input(fake_img, dtype=np.int16))
 
