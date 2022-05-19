@@ -36,9 +36,9 @@ def save_checkpoint(model, optimizer, epoch, args, posfix=''):
         'optimizer_state_dict': optimizer.state_dict(),
         'epoch': epoch,
     }
-    path = os.path.join(args.checkpoint_dir, f'{model.name}{posfix}.pth')
+    path = os.path.join(args.checkpoint_dir, f'{model.name}_{posfix}.pth')
     torch.save(checkpoint, path)
-    print('save success',model.name,epoch)
+    print('save success',model.name,epoch,path)
 
 
 def load_checkpoint(model, checkpoint_dir, posfix=''):
