@@ -58,17 +58,18 @@ def divisible(dim):
 def resize_image(image, width=None, height=None, inter=cv2.INTER_AREA):
     dim = None
     h, w = image.shape[:2]
-
+    #固定步骤为divisible，将图片的宽和高更改为32的倍数
+    #如果规定了宽和高，则直接将宽和高进行divisible
     if width and height:
         return cv2.resize(image, divisible((width, height)),  interpolation=inter)
-
+    #如果宽高没有规定，则使用图片的宽高
     if width is None and height is None:
         return cv2.resize(image, divisible((w, h)),  interpolation=inter)
-
+    #如果宽为空，高设定，则按照原图片比例设置宽
     if width is None:
         r = height / float(h)
         dim = (int(w * r), height)
-
+    #如果高为空，宽设定，则按照原图比例设置高
     else:
         r = width / float(w)
         dim = (width, int(h * r))

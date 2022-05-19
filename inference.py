@@ -64,11 +64,10 @@ class Transformer:
         print(f"Anime image saved to {save_path}")
 
     def transform_in_dir(self, img_dir, dest_dir, max_images=0, img_size=(512, 512)):
-        '''
-        Read all images from img_dir, transform and write the result
-        to dest_dir
+        
+        #Read all images from img_dir, transform and write the result to dest_dir
 
-        '''
+        
         os.makedirs(dest_dir, exist_ok=True)
 
         files = os.listdir(img_dir)
@@ -88,24 +87,16 @@ class Transformer:
             cv2.imwrite(os.path.join(dest_dir, f'{fname}_anime.jpg'), anime_img[..., ::-1])
 
     def transform_video(self, input_path, output_path, batch_size=4, start=0, end=0):
-        '''
-        Transform a video to animation version
-        https://github.com/lengstrom/fast-style-transfer/blob/master/evaluate.py#L21
-        '''
+        
         # Force to None
         end = end or None
 
         if not os.path.isfile(input_path):
             raise FileNotFoundError(f'{input_path} does not exist')
 
+        #获取output的上级目录
         output_dir = "/".join(output_path.split("/")[:-1])
         os.makedirs(output_dir, exist_ok=True)
-        is_gg_drive = '/drive/' in output_path
-        temp_file = ''
-
-        if is_gg_drive:
-            # Writing directly into google drive can be inefficient
-            temp_file = f'tmp_anime.{output_path.split(".")[-1]}'
 
         def transform_and_write(frames, count, writer):
             anime_images = denormalize_input(self.transform(frames), dtype=np.uint8)
@@ -118,7 +109,7 @@ class Transformer:
             video_clip = video_clip.subclip(start, end)
 
         video_writer = ffmpeg_writer.FFMPEG_VideoWriter(
-            temp_file or output_path,
+            output_path,
             video_clip.size, video_clip.fps, codec="libx264",
             preset="medium", bitrate="2000k",
             audiofile=input_path, threads=None,
@@ -144,10 +135,6 @@ class Transformer:
         # The last frames
         if frame_count != 0:
             transform_and_write(frames, frame_count, video_writer)
-
-        if temp_file:
-            # move to output path
-            shutil.move(temp_file, output_path)
 
         print(f'Animation video saved to {output_path}')
         video_writer.close()
