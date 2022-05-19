@@ -158,6 +158,7 @@ def main(args):
 
         if e < args.init_epochs:
             # Train with content loss only
+            #固定lr为Init_lr，初始训练
             set_lr(optimizer_g, args.init_lr)
             for img, *_ in bar:
                 img = img.to(args.device)
@@ -231,8 +232,8 @@ def main(args):
             bar.set_description(f'loss G: adv {avg_adv:2f} con {avg_content:2f} gram {avg_gram:2f} color {avg_color:2f} / loss D: {avg_adv_d:2f}')
 
         if e % args.save_interval == 0:
-            save_checkpoint(G, optimizer_g, e, args)
-            save_checkpoint(D, optimizer_d, e, args)
+            save_checkpoint(G, optimizer_g, e, args,e)
+            save_checkpoint(D, optimizer_d, e, args,e)
         if e % 20 == 0:
             save_samples(G, data_loader, args)
 

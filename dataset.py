@@ -11,10 +11,10 @@ class AnimeDataSet(Dataset):
         """   
         folder structure:
             - {data_dir}
-                - train_photo
+                - train_photo #来自cycleGAN
                     1.jpg, ..., n.jpg
-                - {dataset}  # E.g Hayao
-                    smooth
+                - {dataset}  # E.g shinkai hayao
+                    smooth #通过script/edge_smooth.py实现
                         1.jpg, ..., n.jpg
                     style
                         1.jpg, ..., n.jpg
@@ -23,6 +23,7 @@ class AnimeDataSet(Dataset):
         dataset = args.dataset
         train_photo_path = args.train_photo_path
 
+        #获取动漫dataset的路径
         anime_dir = os.path.join(data_dir, dataset)
         if not os.path.exists(data_dir):
             raise FileNotFoundError(f'Folder {data_dir} does not exist')
@@ -30,6 +31,7 @@ class AnimeDataSet(Dataset):
         if not os.path.exists(anime_dir):
             raise FileNotFoundError(f'Folder {anime_dir} does not exist')
 
+        #计算style中文件夹中所有图片的均值，用BGR格式
         self.mean = compute_data_mean(os.path.join(anime_dir, 'style'))
         print(f'Mean(B, G, R) of {dataset} are {self.mean}')
 
