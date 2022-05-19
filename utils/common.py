@@ -12,10 +12,6 @@ HTTP_PREFIXES = [
     'data:image/jpeg',
 ]
 
-SUPPORT_WEIGHTS = {
-    'hayao',
-    'shinkai',
-}
 
 
 def read_image(path):
@@ -26,7 +22,7 @@ def read_image(path):
     if any(path.startswith(p) for p in HTTP_PREFIXES):
         urllib.request.urlretrieve(path, "temp.jpg")
         path = "temp.jpg"
-
+    #返回RGB格式
     return cv2.imread(path)[: ,: ,::-1]
 
 
@@ -59,6 +55,7 @@ def load_weight(model, weight):
 
 
 def initialize_weights(net):
+    #为animeganv1的初始化权重
     for m in net.modules():
         try:
             if isinstance(m, nn.Conv2d):
@@ -79,17 +76,8 @@ def initialize_weights(net):
 
 
 def set_lr(optimizer, lr):
+    #固定lr学习率，在初始训练中使用
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
-
-
-class DownloadProgressBar(tqdm):
-    '''
-    https://stackoverflow.com/questions/15644964/python-progress-bar-and-downloads
-    '''
-    def update_to(self, b=1, bsize=1, tsize=None):
-        if tsize is not None:
-            self.total = tsize
-        self.update(b * bsize - self.n)
 
 

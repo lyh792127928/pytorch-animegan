@@ -20,7 +20,8 @@ VALID_FORMATS = {
 }
 
 class Transformer:
-    def __init__(self, weight='hayao', add_mean=False):
+    def __init__(self, weight='checkpoint/generate_shinkai.pth', add_mean=False):
+        #weight 为对应的checkpoint存放位置
         self.G = Generator()
 
         if cuda_available:

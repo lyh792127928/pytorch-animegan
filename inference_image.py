@@ -6,8 +6,8 @@ from inference import Transformer
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--checkpoint', type=str, default='checkpoint')
-    parser.add_argument('--src', type=str, default='/content/checkpoints', help='source dir, contain real images')
-    parser.add_argument('--dest', type=str, default='/content/images', help='destination dir to save generated images')
+    parser.add_argument('--src', type=str, default='dataset/train_photo/1.jpg', help='source dir, contain real images or source image')
+    parser.add_argument('--dest', type=str, default='dataset/pred_photo/1.png', help='destination dir to save generated images')
 
     return parser.parse_args()
 
