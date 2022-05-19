@@ -4,9 +4,9 @@ from inference import Transformer
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--checkpoint', type=str, default='checkpoint')
-    parser.add_argument('--src', type=str, default='/content/checkpoints', help='Path to input video')
-    parser.add_argument('--dest', type=str, default='/content/images', help='Path to save new video')
+    parser.add_argument('--checkpoint', type=str, default='checkpoint/generate_shinkai.pth')
+    parser.add_argument('--src', type=str, default='dataset/video/city.gif', help='Path to input video')
+    parser.add_argument('--dest', type=str, default='dataset/video/1.mp4', help='Path to save new video')
     parser.add_argument('--batch-size', type=int, default=4)
     parser.add_argument('--start', type=int, default=0, help='Start time of video (second)')
     parser.add_argument('--end', type=int, default=0, help='End time of video (second), 0 if not set')
