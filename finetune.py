@@ -128,8 +128,8 @@ def main(args):
 
     G = Generator(args.dataset).to(args.device)
     D = Discriminator(args).to(args.device)
-    G.name = args.pretrained_dataset
-    D.name = args.pretrained_dataset
+    G.name = 'generator_' + args.pretrained_dataset
+    D.name = 'discriminator_' + args.pretrained_dataset
     loss_tracker = LossSummary(args)
 
     loss_fn = AnimeGanLoss(args)
