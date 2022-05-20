@@ -224,7 +224,8 @@ def main(args):
             bar.set_description(f'loss G: adv {avg_adv:2f} con {avg_content:2f} gram {avg_gram:2f} color {avg_color:2f} / loss D: {avg_adv_d:2f}')
 
         if e % args.save_interval == 0:
-            posfix = 'finetune_' + str(e)
+            finetune_e = e-start_e
+            posfix = 'train_'+str(start_e)+'_finetune_' + str(finetune_e)
             save_checkpoint(G, optimizer_g, e, args,posfix)
             save_checkpoint(D, optimizer_d, e, args,posfix)
         if e % 20 == 0:
