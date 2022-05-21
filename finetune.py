@@ -27,6 +27,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default='shinkai')
     parser.add_argument('--pretrained_dataset', type=str, default='shinkai')
+    parser.add_argument('--freeze_d', type=bool, default=False)
     parser.add_argument('--data-dir', type=str, default='dataset')
     parser.add_argument('--train_photo_path', type=str, default='train_photo')
     parser.add_argument('--epochs', type=int, default=100)
@@ -175,11 +176,11 @@ def main(args):
 
             # ---------------- TRAIN D ---------------- #
             optimizer_d.zero_grad()
-
-            requires_grad(G,False)
-            requires_grad(D,False)
-            #进行freeze_d finttune
-            requires_grad(D,True,target_layer=f'third')
+            if(args.freeze_d):
+                requires_grad(G,False)
+                requires_grad(D,False)
+                #进行freeze_d finetune
+                requires_grad(D,True,target_layer=f'third')
 
             fake_img = G(img).detach()
 
@@ -205,9 +206,9 @@ def main(args):
 
             # ---------------- TRAIN G ---------------- #
             optimizer_g.zero_grad()
-
-            requires_grad(G,True)
-            requires_grad(D,False)
+            if(args.freeze_d):
+                requires_grad(G,True)
+                requires_grad(D,False)
 
             fake_img = G(img)
             fake_d = D(fake_img)

@@ -1,10 +1,8 @@
+from cv2 import transform
 import torch
 import cv2
 import os
 import numpy as np
-import shutil
-import moviepy.video.io.ffmpeg_writer as ffmpeg_writer
-from moviepy.video.io.VideoFileClip import VideoFileClip
 from modeling.anime_ganv2 import Generator
 from utils.common import load_weight
 from utils.image_processing import resize_image, normalize_input, denormalize_input
@@ -86,58 +84,41 @@ class Transformer:
             anime_img = denormalize_input(anime_img, dtype=np.int16)
             cv2.imwrite(os.path.join(dest_dir, f'{fname}_anime.jpg'), anime_img[..., ::-1])
 
-    def transform_video(self, input_path, output_path, batch_size=4, start=0, end=0):
+    def transform_video(self, input_path, output_path):
         
-        # Force to None
-        end = end or None
-
         if not os.path.isfile(input_path):
             raise FileNotFoundError(f'{input_path} does not exist')
 
-        #获取output的上级目录
-        output_dir = "/".join(output_path.split("/")[:-1])
-        os.makedirs(output_dir, exist_ok=True)
+        cap = cv2.VideoCapture(input_path)
 
-        def transform_and_write(frames, count, writer):
-            anime_images = denormalize_input(self.transform(frames), dtype=np.uint8)
-            for i in range(0, count):
-                img = np.clip(anime_images[i], 0, 255)
-                writer.write_frame(img)
+        fourcc = cv2.VideoWriter_fourcc(*'MP4V')  # 视频编解码器
+        fps = cap.get(cv2.CAP_PROP_FPS)  # 帧数
+        print('fps:',fps)
+        width, height = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))  # 宽高
+        out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))  # 写入视频
+        i = 0
 
-        video_clip = VideoFileClip(input_path, audio=False)
-        if start or end:
-            video_clip = video_clip.subclip(start, end)
+        while(True):
+            print(i)
+            ret, frame = cap.read()
+            if(i%10==0):
+                if ret == True:
+                    frame = frame[:,:,::-1]
+                    frame = resize_image(frame)
+                    img = self.transform(frame)[0]
+                    anime_img = denormalize_input(img, dtype=np.int16)
+                    out.write(anime_img)  # 写入帧
+                    print('processing')
+                else:
+                    break
+            i = i + 1
+            print('end:',i)
+            
 
-        video_writer = ffmpeg_writer.FFMPEG_VideoWriter(
-            output_path,
-            video_clip.size, video_clip.fps, codec="libx264",
-            preset="medium", bitrate="2000k",
-            audiofile=input_path, threads=None,
-            ffmpeg_params=None)
-
-        total_frames = round(video_clip.fps * video_clip.duration)
-        print(f'Transfroming video {input_path}, {total_frames} frames, size: {video_clip.size}')
-
-        batch_shape = (batch_size, video_clip.size[1], video_clip.size[0], 3)
-        frame_count = 0
-        frames = np.zeros(batch_shape, dtype=np.float32)
-        for frame in tqdm(video_clip.iter_frames()):
-            try:
-                frames[frame_count] = frame
-                frame_count += 1
-                if frame_count == batch_size:
-                    transform_and_write(frames, frame_count, video_writer)
-                    frame_count = 0
-            except Exception as e:
-                print(e)
-                break
-
-        # The last frames
-        if frame_count != 0:
-            transform_and_write(frames, frame_count, video_writer)
-
+        cap.release()
+        out.release()
         print(f'Animation video saved to {output_path}')
-        video_writer.close()
+
 
     def preprocess_images(self, images):
         '''

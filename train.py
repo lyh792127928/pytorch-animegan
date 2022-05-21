@@ -29,7 +29,7 @@ def parse_args():
     parser.add_argument('--train_photo_path', type=str, default='train_photo')
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--init_epochs', type=int, default=5)
-    parser.add_argument('--batch-size', type=int, default=6)
+    parser.add_argument('--batch-size', type=int, default=4)
     parser.add_argument('--checkpoint_dir', type=str, default='checkpoint')
     parser.add_argument('--save_image_dir', type=str, default='dataset/predict_photo')
     parser.add_argument('--gan_loss', type=str, default='lsgan', help='lsgan / hinge / bce')

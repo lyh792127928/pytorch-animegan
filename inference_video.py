@@ -15,10 +15,7 @@ def parse_args():
 
 
 def main(args):
-    Transformer(args.checkpoint).transform_video(args.src, args.dest,
-                                                 args.batch_size,
-                                                 start=args.start,
-                                                 end=args.end)
+    Transformer(args.checkpoint).transform_video(args.src, args.dest)
 
 if __name__ == '__main__':
     args = parse_args()
