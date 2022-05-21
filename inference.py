@@ -5,7 +5,7 @@ import os
 import numpy as np
 from modeling.anime_ganv2 import Generator
 from utils.common import load_weight
-from utils.image_processing import resize_image, normalize_input, denormalize_input
+from utils.image_processing import resize_image, normalize_input, denormalize_input,divisible
 from utils import read_image
 from tqdm import tqdm
 
@@ -84,35 +84,33 @@ class Transformer:
             anime_img = denormalize_input(anime_img, dtype=np.int16)
             cv2.imwrite(os.path.join(dest_dir, f'{fname}_anime.jpg'), anime_img[..., ::-1])
 
-    def transform_video(self, input_path, output_path):
+    def transform_video(self, input_path, output_path,fps_trans=5):
         
         if not os.path.isfile(input_path):
             raise FileNotFoundError(f'{input_path} does not exist')
 
         cap = cv2.VideoCapture(input_path)
 
-        fourcc = cv2.VideoWriter_fourcc(*'MP4V')  # 视频编解码器
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # 视频编解码器
         fps = cap.get(cv2.CAP_PROP_FPS)  # 帧数
-        print('fps:',fps)
         width, height = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))  # 宽高
-        out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))  # 写入视频
+        width, height = divisible((width, height))
+        print(width)
+        print(height)
+        out = cv2.VideoWriter(output_path, fourcc, fps,(width, height))  # 写入视频
         i = 0
-
         while(True):
-            print(i)
             ret, frame = cap.read()
-            if(i%10==0):
+            if(i%fps_trans==0):
                 if ret == True:
                     frame = frame[:,:,::-1]
                     frame = resize_image(frame)
                     img = self.transform(frame)[0]
-                    anime_img = denormalize_input(img, dtype=np.int16)
-                    out.write(anime_img)  # 写入帧
-                    print('processing')
+                    anime_img = denormalize_input(img, dtype=np.uint8)
+                    out.write(anime_img[:,:,::-1])  # 写入帧
                 else:
                     break
             i = i + 1
-            print('end:',i)
             
 
         cap.release()
