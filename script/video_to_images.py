@@ -23,6 +23,8 @@ def parse_args():
 class VideoConverter:
     def __init__(self, video_path, save_dir, max_image=1600, start=0, end=0, image_size=256):
         os.makedirs(save_dir, exist_ok=True)
+        print(video_path)
+        print(os.path.isfile(video_path))
 
         assert os.path.isfile(video_path), f'{video_path} must be a video file'
 
