@@ -3,25 +3,13 @@ import torch
 import gc
 import os
 import torch.nn as nn
-import urllib.request
 import cv2
-from tqdm import tqdm
-
-HTTP_PREFIXES = [
-    'http',
-    'data:image/jpeg',
-]
-
 
 
 def read_image(path):
     """
     Read image from given path
     """
-
-    if any(path.startswith(p) for p in HTTP_PREFIXES):
-        urllib.request.urlretrieve(path, "temp.jpg")
-        path = "temp.jpg"
     #返回RGB格式
     return cv2.imread(path)[: ,: ,::-1]
 
