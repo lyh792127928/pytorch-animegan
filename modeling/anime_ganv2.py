@@ -1,6 +1,7 @@
 
 import torch.nn as nn
 import torch.nn.functional as F
+import torch
 from torch.nn.utils import spectral_norm
 
 class Layer_Norm(nn.Module):
@@ -9,7 +10,7 @@ class Layer_Norm(nn.Module):
         super().__init__()
 
     def forward(self, x):
-        return F.layer_norm(x, x.size()[1:])
+        return F.layer_norm(x, torch.tensor(x.size()[1:]).tolist())
 
 
 class Conv2DNormLReLU(nn.Module):
