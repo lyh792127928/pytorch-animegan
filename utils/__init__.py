@@ -6,8 +6,8 @@ class DefaultArgs:
     data_dir ='/content'
     epochs = 10
     batch_size = 1
-    checkpoint_dir ='/content/checkpoints'
-    save_image_dir ='/content/images'
+    checkpoint_dir ='/checkpoints'
+    save_image_dir ='/images'
     display_image =True
     save_interval =2
     debug_samples =0

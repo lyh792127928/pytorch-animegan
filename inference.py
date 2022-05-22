@@ -18,7 +18,7 @@ VALID_FORMATS = {
 }
 
 class Transformer:
-    def __init__(self, weight='checkpoint/generate_shinkai.pth', add_mean=False):
+    def __init__(self, weight='checkpoint/generate_shinkai.pth'):
         #weight 为对应的checkpoint存放位置
         self.G = Generator()
 
@@ -95,8 +95,6 @@ class Transformer:
         fps = cap.get(cv2.CAP_PROP_FPS)  # 帧数
         width, height = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))  # 宽高
         width, height = divisible((width, height))
-        print(width)
-        print(height)
         out = cv2.VideoWriter(output_path, fourcc, fps,(width, height))  # 写入视频
         i = 0
         while(True):
@@ -112,7 +110,6 @@ class Transformer:
                     break
             i = i + 1
             
-
         cap.release()
         out.release()
         print(f'Animation video saved to {output_path}')
