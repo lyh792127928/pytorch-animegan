@@ -5,7 +5,7 @@ import torch
 from torch.nn.utils import spectral_norm
 
 class Layer_Norm(nn.Module):
-    #LN函数，animeganv2与animegan在discriminator的区别就是由
+    #LN函数，animeganv2与animegan在discriminator，把IN改成了LN
     def __init__(self):
         super().__init__()
 
