@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video-path', type=str, default='./dataset.video/test.mp4')
+    parser.add_argument('--video-path', type=str, default='./dataset/video/test.mp4')
     parser.add_argument('--save-path', type=str, default='./dataset/test_crop')
     parser.add_argument('--max-image', type=int, default=1800)
     parser.add_argument('--start', type=int, default=0)
