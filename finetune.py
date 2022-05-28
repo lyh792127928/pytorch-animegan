@@ -165,6 +165,22 @@ def main(args):
 
         G.train()
 
+        init_losses = []
+        for _ in range(args.init_epochs):
+            # Train with content loss only
+            for img, *_ in bar:
+                img = img.to(args.device)
+                optimizer_g.zero_grad()
+                fake_img = G(img)
+                loss = loss_fn.content_loss_vgg(img, fake_img)
+                loss.backward()
+                optimizer_g.step()
+                init_losses.append(loss.cpu().detach().numpy())
+                avg_content_loss = sum(init_losses) / len(init_losses)
+                bar.set_description(f'[Init Training G] content loss: {avg_content_loss:2f}')
+        
+            continue
+
         
         loss_tracker.reset()
         for img, anime, anime_gray, anime_smt_gray in bar:

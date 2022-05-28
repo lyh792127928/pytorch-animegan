@@ -117,4 +117,4 @@ def compute_data_mean(data_folder):
     channel_mean = total / len(image_files)
     mean = np.mean(channel_mean)
 
-    return mean - channel_mean[...,::-1]  # Convert to BGR for training
+    return mean - channel_mean[...,::-1]  # Convert to RGB for training
