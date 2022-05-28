@@ -6,7 +6,6 @@ import numpy as np
 from modeling.anime_ganv2 import Generator
 from utils.common import load_weight
 from utils.image_processing import resize_image, normalize_input, denormalize_input,divisible
-from utils import read_image
 from tqdm import tqdm
 
 
@@ -48,7 +47,7 @@ class Transformer:
             return fake
 
     def transform_file(self, file_path, save_path):
-        image = read_image(file_path)
+        image = cv2.imread(file_path)[:,:,::-1]
 
         if image is None:
             raise ValueError(f"Could not get image from {file_path}")

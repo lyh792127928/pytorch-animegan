@@ -116,12 +116,12 @@ def main(args):
     check_params(args)
 
     print("Init models...")
-
+    #定义model
     G = Generator(args.dataset).to(args.device)
     D = Discriminator(args).to(args.device)
-
+    #loss的记录，后面会通过tqdm展示
     loss_tracker = LossSummary(args)
-
+    #定义LOSS类进行backward
     loss_fn = AnimeGanLoss(args)
 
     # Create DataLoader
@@ -133,7 +133,7 @@ def main(args):
         shuffle=True,
         collate_fn=collate_fn,
     )
-
+    #定义adam优化器
     optimizer_g = optim.Adam(G.parameters(), lr=args.lr_g, betas=(0.5, 0.999))
     optimizer_d = optim.Adam(D.parameters(), lr=args.lr_d, betas=(0.5, 0.999))
 
@@ -158,23 +158,18 @@ def main(args):
 
         if e < args.init_epochs:
             # Train with content loss only
-            #固定lr为Init_lr，初始训练
-            set_lr(optimizer_g, args.init_lr)
+            #set_lr(optimizer_g, args.init_lr)
             for img, *_ in bar:
                 img = img.to(args.device)
-                
                 optimizer_g.zero_grad()
-
                 fake_img = G(img)
                 loss = loss_fn.content_loss_vgg(img, fake_img)
                 loss.backward()
                 optimizer_g.step()
-
                 init_losses.append(loss.cpu().detach().numpy())
                 avg_content_loss = sum(init_losses) / len(init_losses)
                 bar.set_description(f'[Init Training G] content loss: {avg_content_loss:2f}')
-
-            set_lr(optimizer_g, args.lr_g)
+            #set_lr(optimizer_g, args.lr_g)
             #save_checkpoint(G, optimizer_g, e, args, posfix='_init')
             #save_samples(G, data_loader, args, subname='initg')
             continue

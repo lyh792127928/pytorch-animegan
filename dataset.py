@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
-from utils import normalize_input, compute_data_mean
+from utils.image_processing import normalize_input, compute_data_mean
 
 class AnimeDataSet(Dataset):
     def __init__(self, args, transform=None):

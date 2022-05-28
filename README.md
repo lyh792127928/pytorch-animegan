@@ -29,10 +29,10 @@ anime_photo为动漫数据集，结构为{dataset_name}/{style}和{dataset_name}
 **Step 1.** Create anime images from the video
 
 ```bash
-python3 script/video_to_images.py --video-path ./dataset/video/test.mp4
+python script/video_to_images.py --video-path ./dataset/video/test.mp4
                                 --save-path ./dataset/test_crop
-                                --max-image 1800\
-                                --image-size 256\
+                                --max-image 1800
+                                --image-size 256
 ```
 其中video_path 为video路径，save_path为保存路径，max_image为最大图片数，image_size为最终被转化成的图片大小
 
@@ -47,7 +47,7 @@ python3 script/edge_smooth.py --dataset shinkai --image-size 256
 To train the animeGAN from command line, you can run `train.py` as the following:
 
 ```bash
-python3 train.py --dataset shinakai # 可以是shinkai,hayao或自己准备的数据集
+python train.py --dataset shinakai # 可以是shinkai,hayao或自己准备的数据集
                  --epochs 20 #训练批数
                  --device cpu #训练使用cpu还是gpu
                  --save_interval 5 #训练几个epoch保存一次checkpoint
@@ -65,7 +65,7 @@ To convert images in a folder or single image, run `inference_image.py`, for exa
 > --src and --dest can be a directory or a file
 
 ```bash
-python3 inference_image.py 
+python inference_image.py 
                 --checkpoint checkpoint_dir #checkpoint所在目录
                 --src sample/origin #需转化真实图片所在目录
                 --dest sample/anime #被动漫化后保存图片目录
@@ -77,7 +77,7 @@ python3 inference_image.py
 To convert a video to anime version, run `inference_video.py`, for example:
 
 ```bash
-python3 inference_video.py 
+python inference_video.py 
                 --checkpoint checkpoint_dir #checkpoint目录
                 --src sample/video/test.mp4 #视频所在地址
                 --dest sample/video/test_anime.mp4 #保存视频地址
@@ -88,7 +88,7 @@ python3 inference_video.py
 可以在已经预训练好的模型好进行finetune,以适应新的动漫化内容，例如：人脸
 
 ```bash
-python3 finetune.py 
+python finetune.py 
             --freeze_d False #是否使用freeze_d方式进行finetune
             --pretrained_dataset #预训练所使用的动漫数据集，主要用于最终finetune的命名
             --dataset anime_face # 可以是shinkai,hayao或自己处理好的数据集
@@ -115,8 +115,8 @@ python3 finetune.py
 
 ## face finetune transformation results
 
-|Input_____| finetune__|freeze_D_ |little_face |
-|--|--|--|--|
-|![c2](./sample/face/2.jpg)|![g2](./sample/anime_face/finetune/2_anime.jpg)|![a2](./sample/anime_face/freeze_d_finetune/2_anime.jpg)|![b2](./sample/anime_face/little_animeface_finetune/2_anime.jpg)|
-|![c3](./sample/face/1.jpg)|![g3](./sample/anime_face/finetune/1_anime.jpg)|![a3](./sample/anime_face/freeze_d_finetune/1_anime.jpg)|![b3](./sample/anime_face/little_animeface_finetune/1_anime.jpg)|
-|![c1](./sample/face/4.jpg)|![g1](./sample/anime_face/finetune/4_anime.jpg)|![a1](./sample/anime_face/freeze_d_finetune/4_anime.jpg)|![b1](./sample/anime_face/little_animeface_finetune/4_anime.jpg)|
+|Input |normal| finetune|freeze_D |little_face |
+|--|--|--|--|--|
+|![c2](./sample/face/2.jpg)|![d2](./sample/anime_face/normal/2_anime.jpg)|![g2](./sample/anime_face/finetune/2_anime.jpg)|![a2](./sample/anime_face/freeze_d_finetune/2_anime.jpg)|![b2](./sample/anime_face/little_animeface_finetune/2_anime.jpg)|
+|![c3](./sample/face/1.jpg)|![d3](./sample/anime_face/normal/1_anime.jpg)|![g3](./sample/anime_face/finetune/1_anime.jpg)|![a3](./sample/anime_face/freeze_d_finetune/1_anime.jpg)|![b3](./sample/anime_face/little_animeface_finetune/1_anime.jpg)|
+|![c1](./sample/face/4.jpg)|![d1](./sample/anime_face/normal/4_anime.jpg)|![g1](./sample/anime_face/finetune/4_anime.jpg)|![a1](./sample/anime_face/freeze_d_finetune/4_anime.jpg)|![b1](./sample/anime_face/little_animeface_finetune/4_anime.jpg)|
