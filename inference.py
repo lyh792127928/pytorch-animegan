@@ -53,7 +53,7 @@ class Transformer:
             raise ValueError(f"Could not get image from {file_path}")
 
         anime_img = self.transform(resize_image(image))[0]
-        anime_img = denormalize_input(anime_img, dtype=np.int16)
+        anime_img = denormalize_input(anime_img, dtype=np.uint8)
         cv2.imwrite(save_path, anime_img[..., ::-1])
         print(f"Anime image saved to {save_path}")
 

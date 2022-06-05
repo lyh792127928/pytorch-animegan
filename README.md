@@ -69,7 +69,7 @@ python inference_image.py
                 --checkpoint checkpoint_dir #checkpoint所在目录
                 --src sample/origin #需转化真实图片所在目录
                 --dest sample/anime #被动漫化后保存图片目录
-                --onnx onnx #使用pytorch还是onnx方式进行预测
+                --type onnx #使用pytorch还是onnx方式进行预测
 ```
 
 ### 4. Transform video
@@ -82,6 +82,7 @@ python inference_video.py
                 --src sample/video/test.mp4 #视频所在地址
                 --dest sample/video/test_anime.mp4 #保存视频地址
                 --fps_trans 5 #每几帧进行一次转化
+                --type onnx #使用pytorch还是onnx方式进行预测
 ```
 ### 5. Finetune model
 
@@ -94,11 +95,9 @@ python finetune.py
             --dataset anime_face # 可以是shinkai,hayao或自己处理好的数据集
             --epochs 10 #训练批数
             --device cpu #训练使用cpu还是gpu
-            --save_interval 1 #训练几个epoch保存一次
-            checkpoint
+            --save_interval 1 #训练几个epoch保存一次checkpoint
             --checkpoint_dir checkpoint #训练得到的checkpoint保存位置
-            --train_photo_path human_face #训练所使用真实图片文件夹位
-            置
+            --train_photo_path human_face #训练所使用真实图片文件夹位置
             --data_dir dataset #训练所使用动漫图片文件夹位置
             --batch 4 #batch大小
 ```
