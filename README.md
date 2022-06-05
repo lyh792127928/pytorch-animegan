@@ -57,34 +57,7 @@ python train.py --dataset shinakai # 可以是shinkai,hayao或自己准备的数
                  --batch 4 #batch大小
                  --init_epochs 4 #只是用content loss训练的批次
 ```
-
-### 3. Transform images
-
-To convert images in a folder or single image, run `inference_image.py`, for example:
-
-> --src and --dest can be a directory or a file
-
-```bash
-python inference_image.py 
-                --checkpoint checkpoint_dir #checkpoint所在目录
-                --src sample/origin #需转化真实图片所在目录
-                --dest sample/anime #被动漫化后保存图片目录
-                --type onnx #使用pytorch还是onnx方式进行预测
-```
-
-### 4. Transform video
-
-To convert a video to anime version, run `inference_video.py`, for example:
-
-```bash
-python inference_video.py 
-                --checkpoint checkpoint_dir #checkpoint目录
-                --src sample/video/test.mp4 #视频所在地址
-                --dest sample/video/test_anime.mp4 #保存视频地址
-                --fps_trans 5 #每几帧进行一次转化
-                --type onnx #使用pytorch还是onnx方式进行预测
-```
-### 5. Finetune model
+### 3. Finetune model
 
 可以在已经预训练好的模型好进行finetune,以适应新的动漫化内容，例如：人脸
 
@@ -101,6 +74,42 @@ python finetune.py
             --data_dir dataset #训练所使用动漫图片文件夹位置
             --batch 4 #batch大小
 ```
+### 4. Transform pytorch model to onnx model, so can inference pictures with openvino
+
+Transform pytorch model to onnx model, so can inference pictures with openvino, for example:
+
+```bash
+python create_onnx.py 
+                --checkpoint checkpoint/freeze_d_face/generator_shinkai_train_24_finetune_10.pth 
+                --output_onnx checkpoint/animegan_freeze_d_face_finetune.onnx
+```
+### 5. Transform images
+
+To convert images in a folder or single image, run `inference_image.py`, for example:
+
+> --src and --dest can be a directory or a file
+
+```bash
+python inference_image.py 
+                --checkpoint checkpoint_dir #checkpoint所在目录
+                --src sample/origin #需转化真实图片所在目录
+                --dest sample/anime #被动漫化后保存图片目录
+                --type onnx #使用pytorch还是onnx方式进行预测
+```
+
+### 6. Transform video
+
+To convert a video to anime version, run `inference_video.py`, for example:
+
+```bash
+python inference_video.py 
+                --checkpoint checkpoint_dir #checkpoint目录
+                --src sample/video/test.mp4 #视频所在地址
+                --dest sample/video/test_anime.mp4 #保存视频地址
+                --fps_trans 5 #每几帧进行一次转化
+                --type onnx #使用pytorch还是onnx方式进行预测
+```
+
 
 ## Anime transformation results
 
