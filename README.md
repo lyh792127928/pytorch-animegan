@@ -76,13 +76,20 @@ python finetune.py
 ```
 ### 4. Transform pytorch model to onnx model, so can inference pictures with openvino
 
-Transform pytorch model to onnx model, so can inference pictures with openvino, for example:
+Transform pytorch model to onnx and to ir model, so can inference pictures with openvino by onnx or ir, for example:
 
 ```bash
 python create_onnx.py 
                 --checkpoint checkpoint/freeze_d_face/generator_shinkai_train_24_finetune_10.pth 
                 --output_onnx checkpoint/animegan_freeze_d_face_finetune.onnx
 ```
+
+```bash
+!python create_ir.py 
+            --input_onnx checkpoint/animegan.onnx 
+            --output_ir checkpoint/animegan_ir
+```
+
 ### 5. Transform images
 
 To convert images in a folder or single image, run `inference_image.py`, for example:
@@ -94,7 +101,7 @@ python inference_image.py
                 --checkpoint checkpoint_dir #checkpoint所在目录
                 --src sample/origin #需转化真实图片所在目录
                 --dest sample/anime #被动漫化后保存图片目录
-                --type onnx #使用pytorch还是onnx方式进行预测
+                --type openvino #使用pytorch还是openvino方式进行预测
 ```
 
 ### 6. Transform video
@@ -107,7 +114,7 @@ python inference_video.py
                 --src sample/video/test.mp4 #视频所在地址
                 --dest sample/video/test_anime.mp4 #保存视频地址
                 --fps_trans 5 #每几帧进行一次转化
-                --type onnx #使用pytorch还是onnx方式进行预测
+                --type openvino #使用pytorch还是openvino方式进行预测
 ```
 
 
