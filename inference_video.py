@@ -1,6 +1,6 @@
 import argparse
 from inference import Transformer
-from inference_onnx import Transformer_onnx
+from inference_openvino import Transformer_openvino
 
 
 def parse_args():
@@ -11,7 +11,7 @@ def parse_args():
     parser.add_argument('--fps_trans', type=int, default=5, help='多少帧转化一次')
     parser.add_argument('--start', type=int, default=0, help='Start time of video (second)')
     parser.add_argument('--end', type=int, default=0, help='End time of video (second), 0 if not set')
-    parser.add_argument('--type', type=str, default='onnx', help='use pytorch or onnx to inference')
+    parser.add_argument('--type', type=str, default='onnx', help='use pytorch or openvino to inference')
 
     return parser.parse_args()
 
@@ -19,8 +19,11 @@ def parse_args():
 def main(args):
     if(args.type == 'pytorch'):
         transformer = Transformer(args.checkpoint)
-    if(args.type=='onnx'):
-        transformer = Transformer_onnx(args.checkpoint)
+    if(args.type=='openvino'):
+        transformer = Transformer_openvino(args.checkpoint)
+    else:
+        print('pleaase set type as pytorch or openvino')
+        return 
 
     transformer.transform_video(args.src, args.dest,args.fps_trans)
 
