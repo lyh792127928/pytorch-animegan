@@ -19,11 +19,12 @@ def parse_args():
 def main(args):
     if(args.type == 'pytorch'):
         transformer = Transformer(args.checkpoint)
-    if(args.type=='openvino'):
-        transformer = Transformer_openvino(args.checkpoint)
-    else:
-        print('pleaase set type as pytorch or openvino')
-        return 
+    else :
+        if(args.type=='openvino'):
+            transformer = Transformer_openvino(args.checkpoint)
+        else:
+            print('pleaase set type as pytorch or openvino')
+            return 
 
     transformer.transform_video(args.src, args.dest,args.fps_trans)
 
