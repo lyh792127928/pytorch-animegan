@@ -15,13 +15,15 @@ def parse_args():
 
 
 def main(args):
+    print(args.type)
     if(args.type == 'pytorch'):
         transformer = Transformer(args.checkpoint)
-    if(args.type=='openvino'):
-        transformer = Transformer_openvino(args.checkpoint)
     else:
-        print('pleaase set type as pytorch or openvino')
-        return 
+        if(args.type=='openvino'):
+            transformer = Transformer_openvino(args.checkpoint)
+        else:
+            print('please set type as pytorch or openvino')
+            return 
 
     if os.path.exists(args.src) and not os.path.isfile(args.src):
         transformer.transform_in_dir(args.src, args.dest)
